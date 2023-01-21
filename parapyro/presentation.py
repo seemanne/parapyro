@@ -7,9 +7,11 @@ from parapyro.slides.object import Object
 from parapyro.utils.compiler_utils import set_in_brackets, preempt_slash
 
 
+
+
 class Presentation():
 
-    def __init__(self, filename, style=None, template=None, backend=None) -> None:
+    def __init__(self, filename, style=None, template=None, backend=None, **kwargs) -> None:
         
         if style:
             self.style = style
@@ -26,10 +28,15 @@ class Presentation():
         else:
             self.backend = Tectonic()
 
-        self.title = "Test title"
-        self.author = "Test author"
-        self.institute ="Test institute"
-
+        default_params = {
+            "title" : "Presentation title",
+            "author" : "Presentation author",
+            "institute" : "Author institute",
+            "fontsize" : "17",
+            "aspectratio" : "169",
+        }
+        self.params = default_params
+        self.params.update(kwargs)
         self.page_store = []
         self.object_store = {}
         self.filename = filename
@@ -69,11 +76,12 @@ class Presentation():
 
         output = ""
         output += f"""
-\documentclass{set_in_brackets("beamer")}
-{preempt_slash("title")}{set_in_brackets(self.title)}
-{preempt_slash("author")}{set_in_brackets(self.author)}
-\institute{set_in_brackets(self.institute)}
-        """
+\documentclass[{self.params["fontsize"]}pt, aspectratio={self.params["aspectratio"]}]{set_in_brackets("beamer")}
+{preempt_slash("title")}{set_in_brackets(self.params["title"])}
+{preempt_slash("author")}{set_in_brackets(self.params["author"])}
+\institute{set_in_brackets(self.params["institute"])}
+"""
+        output += self.style._generate_frontmatter()
         output += self.template._generate_frontmatter()
         output += f"""
 {preempt_slash("begin")}{set_in_brackets("document")}
