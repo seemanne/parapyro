@@ -16,19 +16,19 @@ class BaseObject():
 
         return self.name
 
-class ImageObject():
+class ImageObject(BaseObject):
 
     def __init__(self, name, filepath) -> None:
         
         self.filepath = filepath
 
-        super.__init__(name)
+        super().__init__(name)
 
     def _figure_from_file(self, **kwargs):
         
         box_params = {
-            "width" : 16,
-            "height" : 9,
+            "width" : 12,
+            "height" : 7,
             "keepaspectratio" : True
         }
         box_params.update(kwargs)
@@ -50,5 +50,5 @@ class ImageObject():
 
 def imageobject_from_pyplot(fig: Figure, name):
 
-    fig.savefig(PROJECT_HOME / f"compiled_files/raw/{name}.png")
-    return ImageObject(name, f"compiled_files/raw/{name}.png")
+    fig.savefig(PROJECT_HOME / f"../compiled_files/raw/{name}.png")
+    return ImageObject(name, f"{name}.png")
