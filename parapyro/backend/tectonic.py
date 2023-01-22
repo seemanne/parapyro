@@ -8,4 +8,4 @@ class Tectonic():
 
     def render(self, filename):
         
-        os.system(f"tectonic compiled_files/raw/{filename}.tex")
+        os.system(f"""tectonic compiled_files/raw/{filename}.tex -o "compiled_files/" """)
