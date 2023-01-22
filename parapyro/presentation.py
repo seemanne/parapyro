@@ -77,11 +77,11 @@ class Presentation():
 
         output = ""
         preamble_list = [
-            f"\documentclass[{self.params['fontsize']}pt, aspectratio={self.params['aspectratio']}]{set_in_brackets('beamer')}",
+            f"{preempt_slash('documentclass')}[{self.params['fontsize']}pt, aspectratio={self.params['aspectratio']}]{set_in_brackets('beamer')}",
             f"{usepackage('graphicx')}",
             f"{preempt_slash('title')}{set_in_brackets(self.params['title'])}",
             f"{preempt_slash('author')}{set_in_brackets(self.params['author'])}",
-            f"\institute{set_in_brackets(self.params['institute'])}",
+            f"{preempt_slash('institute')}{set_in_brackets(self.params['institute'])}",
         ]
         output += stack_list_to_lines(preamble_list)
         output += self.style._generate_frontmatter()
@@ -114,6 +114,9 @@ class Presentation():
 if __name__ == "__main__":
 
     pres = Presentation("test_name")
+    pres.add_page(Page("example page", "oh this content is nasty good yes"))
+    pres.add_page(Page("example page", "oh this content is nasty good yes"))
+    pres.add_page(Page("example page", "oh this content is nasty good yes"))
     pres.add_page(Page("example page", "oh this content is nasty good yes"))
     pres.compile()
     pres.render()
