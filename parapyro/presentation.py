@@ -1,4 +1,5 @@
 import os
+from typing import List, Dict
 from pathlib import Path
 from parapyro.rendering.defaults import DefaultStyle, DefaultTemplate
 from parapyro.backend.tectonic import Tectonic
@@ -37,8 +38,8 @@ class Presentation():
         }
         self.params = default_params
         self.params.update(kwargs)
-        self.page_store = []
-        self.object_store = {}
+        self.page_store: List[Page] = []
+        self.object_store: Dict[BaseObject] = {}
         self.filename = filename
 
     def add_page(self, page: Page):
