@@ -1,0 +1,1 @@
+# Parapyro - a beamer wrapper for python to build slides-as-code pipelines for analysts
