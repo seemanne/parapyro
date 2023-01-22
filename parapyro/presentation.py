@@ -4,7 +4,7 @@ from parapyro.rendering.defaults import DefaultStyle, DefaultTemplate
 from parapyro.backend.tectonic import Tectonic
 from parapyro.slides.page import Page
 from parapyro.slides.object import BaseObject
-from parapyro.utils.compiler_utils import set_in_brackets, preempt_slash, usepackage, stack_list_to_lines
+from parapyro.utils.compiler_utils import set_in_brackets, preempt_slash, usepackage, stack_list_to_lines, begin, end
 
 
 
@@ -86,7 +86,7 @@ class Presentation():
         output += self.style._generate_frontmatter()
         output += self.template._generate_frontmatter()
         frontmatter_list = [
-            f"{preempt_slash('begin')}{set_in_brackets('document')}",
+            f"{begin('document')}",
             f"{preempt_slash('frame')}{set_in_brackets(preempt_slash('titlepage'))}"
         ]
         output += stack_list_to_lines(frontmatter_list)
@@ -96,7 +96,7 @@ class Presentation():
     def _generate_backmatter(self):
 
         output = ""
-        output += "\end{document}"
+        output += f"{end('document')}"
         return output
 
 
