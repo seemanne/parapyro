@@ -3,8 +3,8 @@ from pathlib import Path
 from parapyro.rendering.defaults import DefaultStyle, DefaultTemplate
 from parapyro.backend.tectonic import Tectonic
 from parapyro.slides.page import Page
-from parapyro.slides.object import Object
-from parapyro.utils.compiler_utils import set_in_brackets, preempt_slash
+from parapyro.slides.object import BaseObject
+from parapyro.utils.compiler_utils import set_in_brackets, preempt_slash, usepackage, stack_list_to_lines
 
 
 
@@ -45,7 +45,7 @@ class Presentation():
 
         self.page_store.append(page)
 
-    def add_object(self, object: Object, force_overwrite= False):
+    def add_object(self, object: BaseObject, force_overwrite= False):
 
         name = object.name
         if self.object_store.get(name, False) and not force_overwrite:
@@ -75,27 +75,28 @@ class Presentation():
     def _generate_frontmatter(self):
 
         output = ""
-        output += f"""
-\documentclass[{self.params["fontsize"]}pt, aspectratio={self.params["aspectratio"]}]{set_in_brackets("beamer")}
-{preempt_slash("title")}{set_in_brackets(self.params["title"])}
-{preempt_slash("author")}{set_in_brackets(self.params["author"])}
-\institute{set_in_brackets(self.params["institute"])}
-"""
+        preamble_list = [
+            f"\documentclass[{self.params['fontsize']}pt, aspectratio={self.params['aspectratio']}]{set_in_brackets('beamer')}",
+            f"{usepackage('graphicx')}",
+            f"{preempt_slash('title')}{set_in_brackets(self.params['title'])}",
+            f"{preempt_slash('author')}{set_in_brackets(self.params['author'])}",
+            f"\institute{set_in_brackets(self.params['institute'])}",
+        ]
+        output += stack_list_to_lines(preamble_list)
         output += self.style._generate_frontmatter()
         output += self.template._generate_frontmatter()
-        output += f"""
-{preempt_slash("begin")}{set_in_brackets("document")}
-{preempt_slash("frame")}{set_in_brackets(preempt_slash("titlepage"))}
-        """
+        frontmatter_list = [
+            f"{preempt_slash('begin')}{set_in_brackets('document')}",
+            f"{preempt_slash('frame')}{set_in_brackets(preempt_slash('titlepage'))}"
+        ]
+        output += stack_list_to_lines(frontmatter_list)
 
         return output
 
     def _generate_backmatter(self):
 
         output = ""
-        output += """
-\end{document}
-        """
+        output += "\end{document}"
         return output
 
 
