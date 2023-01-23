@@ -1,10 +1,14 @@
 import os
+import subprocess
+import matplotlib.pyplot as plt
+import numpy as np
 from typing import List, Dict
 from pathlib import Path
 from parapyro.rendering.defaults import DefaultStyle, DefaultTemplate
 from parapyro.backend.tectonic import Tectonic
+from parapyro.backend.latex import Pdftex
 from parapyro.slides.page import Page
-from parapyro.slides.object import BaseObject
+from parapyro.slides.object import BaseObject, imageobject_from_pyplot
 from parapyro.utils.compiler_utils import set_in_brackets, preempt_slash, usepackage, stack_list_to_lines, begin, end
 
 
@@ -72,6 +76,8 @@ class Presentation():
     def render(self):
 
         self.backend.render(self.filename)
+        subprocess.call(["xdg-open", f"./compiled_files/{self.filename}.pdf"])
+
 
     def _generate_frontmatter(self):
 
@@ -113,10 +119,19 @@ class Presentation():
 
 if __name__ == "__main__":
 
-    pres = Presentation("test_name")
+    pres = Presentation("test_name", backend=Pdftex())
+    pres.add_page(Page("example page", "content is $e^{-i \pi}$" ))
+    pres.add_page(Page("example page", "no content"))
     pres.add_page(Page("example page", "oh this content is nasty good yes"))
     pres.add_page(Page("example page", "oh this content is nasty good yes"))
-    pres.add_page(Page("example page", "oh this content is nasty good yes"))
-    pres.add_page(Page("example page", "oh this content is nasty good yes"))
+
+    x = np.random.rand(50)
+    y = np.random.rand(50)
+    fig, ax = plt.subplots(figsize=(16, 9), layout='constrained')
+    ax.scatter(x=x, y=y)
+    obj = imageobject_from_pyplot(fig, 'clown')
+    pres.add_page(Page("example plot", obj.compile()))
+
+
     pres.compile()
     pres.render()
